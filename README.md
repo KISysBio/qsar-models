@@ -1,6 +1,8 @@
-**This repository is being constantly updated**
+**WORK IN PROGRESS**
 
 # Info
+
+This repository uses the package `oplrareg` to develop QSAR models. Please install it following the instructions on the link: https://github.com/KISysBio/OPLRAreg
 
 `OPLRAreg` can be applied to any regression problem but the main objective of this research problem was to develop regression algorithms for QSAR modelling.
 
