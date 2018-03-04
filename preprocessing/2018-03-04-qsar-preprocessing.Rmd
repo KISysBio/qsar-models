@@ -1,0 +1,106 @@
+---
+title: "QSAR Preprocessing"
+output: html_notebook
+---
+
+# Introduction
+
+This notebook describes the process of preparing a data set of inhibitors downloaded from ChEMBL for QSAR Modelling with [`OPLRAreg`](https://github.com/KISysBio/OPLRAreg) piecewise algorithm.
+
+The steps involved in this preprocessing are listed below:
+
+1. Download activities data from ChEMBL
+2. Remove invalid entries for QSAR modelling
+3. Treat duplicated entries
+4. Calculate Molecular Descriptors
+5. Filter out invalid descriptors
+    
+# Step 1: Obtaining the data
+
+You can obtain a list of inhbitors from ChEMBL either manually from the website or by creating SQL queries on ChEMBL db file. We have opted for manual download in this study for simplicity since we only studied 5 targets.
+
+#### Download compounds from ChEMBL website
+
+Select a target, say for example [CHEMBL202](https://www.ebi.ac.uk/chembl/target/inspect/CHEMBL202). On the target page, locate the _Target Associated Bioactivities_ tab, click on the download button and select "Display all records". You will be redirected to a page listing all search results. Click on the dropdown menu on the right and click on "Download All Bioactivity Data (XLS)".
+
+#### ChEMBLdb
+
+Another option is to download an instance of the [ChEMBLdb](ftp://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/releases/) on your preferred database management system, and use SQL to select the list of compounds.
+
+#### Read downloaded file
+
+```{r}
+library(xlsx)
+
+#Downloaded from ChEMBL on 2018-03-04
+chembl202_inhibitors <- data.frame(xlsx::read.xlsx("data/bioactivity-18_12_51_59.xls", 1), stringsAsFactors = FALSE)
+chembl202_inhibitors
+```
+
+
+# Step 2: Filtering out invalid entries for QSAR
+
+We must filter the data frame above considering the following:
+
+    - Remove rows where RELATION is different than `=`
+    - The column DATA_VALIDITY_COMMENT must be empty (data is not outside typical range)
+    - Observation has a pCHEMBL value
+    - STANDARD_TYPE is one of the metrics we are interested in (in this study, we are selecting only IC50 measurements)
+
+The column _DATA\_VALIDITY\_COMMENT_ contains a comment whenever there is indication of the observation being invalid:  
+
+```{r}
+chembl202_inhibitors$DATA_VALIDITY_COMMENT <- as.character(chembl202_inhibitors$DATA_VALIDITY_COMMENT)
+chembl202_inhibitors$STANDARD_TYPE <- as.character(chembl202_inhibitors$STANDARD_TYPE)
+chembl202_inhibitors$RELATION <- as.character(chembl202_inhibitors$RELATION)
+table(chembl202_inhibitors$DATA_VALIDITY_COMMENT, useNA = "always")
+```
+    
+We are only interested in the observations where the column _RELATION_ is equals to '='. The possible values in this column are: 
+
+```{r}
+table(chembl202_inhibitors$RELATION)
+```
+
+Filtering all of these:
+    
+```{r}
+library(tidyverse)
+
+filteredDataset <- chembl202_inhibitors %>% filter(RELATION == "=", is.na(DATA_VALIDITY_COMMENT),
+                                !is.na(PCHEMBL_VALUE), STANDARD_TYPE %in% c("IC50"))
+filteredDataset
+```
+
+#Step 3. Treat Duplicated Entries
+
+Some entries in this data frame are duplicated. To treat duplicated entries, we need to identify them and calculate the median and standard deviation of their bioactivities.
+
+If standard deviation is larger than 1, this group of entries are removed, otherwise, only one entry is kept and the median value is the new _PCHEMBL_VALUE_.
+
+
+```{r}
+filteredDataset$PCHEMBL_VALUE <- as.numeric(filteredDataset$PCHEMBL_VALUE)
+
+#Groups data by compound ID and flag duplicated entries
+groupedDataset <-
+    filteredDataset %>% group_by(PARENT_CMPD_CHEMBLID) %>%
+    summarise(NUM_COMPOUNDS=n(), STANDARD_DEVIATION=sd(PCHEMBL_VALUE),
+              NEW_ACTIVITY_VALUE=median(PCHEMBL_VALUE),
+              DUPLICATED=NUM_COMPOUNDS > 1, REMOVE=STANDARD_DEVIATION > 1) %>%
+    arrange(desc(REMOVE))
+groupedDataset
+```
+
+```{r}
+#Remove entries with large standard deviation and keep only one of the entries in duplicated groups
+cleanDataset <- merge(filteredDataset, groupedDataset) %>% filter(REMOVE == FALSE | is.na(REMOVE)) %>% 
+  group_by(PARENT_CMPD_CHEMBLID) %>% slice(1)
+cleanDataset
+```
+
+# Step 4: Calculate molecular descriptors
+
+TODO
+
+# Step 5: Filter out invalid descriptors
