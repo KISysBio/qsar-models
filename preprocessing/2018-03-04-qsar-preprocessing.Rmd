@@ -101,6 +101,44 @@ cleanDataset
 
 # Step 4: Calculate molecular descriptors
 
-TODO
+List of available Descriptors:
+
+```{r}
+library(rcdk)
+
+#' @description CDK Descriptors categories are:
+#' \itemize{
+#'   \item Hydrib
+#'   \item Constitutional
+#'   \item Topological
+#'   \item Electronic
+#'   \item Geometrical
+#' }
+#'
+#'
+#' @param categories if informed, return just the descriptors in those categories
+#'
+#' @return
+#' @export
+#'
+get_cdk_descriptors <- function(categories){
+  categories <-
+    if(missing(categories)){
+      rcdk::get.desc.categories()
+    }else{
+      tolower(categories)
+    }
+
+  bind_rows(
+  lapply(categories,
+         function(category){
+           data.frame(category=category, descriptorClass=rcdk::get.desc.names(category), stringsAsFactors = F)}))
+}
+
+get_cdk_descriptors()
+```
+
+Calculate descriptors for compounds:
+
 
 # Step 5: Filter out invalid descriptors
