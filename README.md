@@ -26,6 +26,8 @@ Then, we preprocessed the data by merging entries of duplicated molecules and fi
 
 The next step was to generate 200+ molecular descriptors using the Java Chemistry Development Kit ([CDK](https://cdk.github.io/)) from within R (the great package [rcdk](https://github.com/rajarshi/cdkr)).
 
+A list of all molecular descriptors can be found from CDK documentation [here](https://cdk.github.io/cdk/1.5/docs/api/org/openscience/cdk/qsar/descriptors/molecular/package-summary.html).
+
 The spreadsheets under directory _data_ represent the final files after this preprocessing step. 
 
 ## Why did you not just stick with Python and use RDKit as the cheminformatics library? 
