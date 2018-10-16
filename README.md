@@ -1,22 +1,22 @@
-**WORK IN PROGRESS**
-
 # Info
 
-This repository uses the package `oplrareg` to develop QSAR models. Please install it following the instructions on the link: https://github.com/KISysBio/OPLRAreg
+This repository contains algorithms for QSAR modelling developed at the group of Dr. Sophia Tsoka at King's College London.
 
-`OPLRAreg` can be applied to any regression problem but the main objective of this research problem was to develop regression algorithms for QSAR modelling.
+Our most recent paper `Optimal Piecewise Regression Algorithm for QSAR Modelling` has been published at Wiley's Molecular Informatics and can be found [here](https://onlinelibrary.wiley.com/doi/full/10.1002/minf.201800028).
 
-This directory contains the data files used in the study `Optimal Piecewise Regression Algorithm for QSAR Modelling` which, at the time of writing, is going through peer review process. We will update this file with links to the study as soon as the paper gets published somewhere.
+In this study, we have developed an algorithm based on mathematical programming to build QSAR models. The algorithm is written in Python and can be applied to any regression analysis, details about how to download and use the `oplrareg` package can be found at the link https://github.com/KISysBio/OPLRAreg
+
+This repository contains the data files used in the study.
 
 # QSAR data sets were used in this study
 
 We tested `OPLRAreg` on 5 data sets downloaded from ChEMBL:
 
-- rDHFR
-- hDHFR
+- [rDHFR](https://www.ebi.ac.uk/chembl/target/inspect/CHEMBL2363): Dihydrofolate reductase (_Rattus norvegicus_)
+- [hDHFR](https://www.ebi.ac.uk/chembl/target/inspect/CHEMBL202): Dihydrofolate reductase (_Homo sapiens_)
 - [CHRM3](https://www.ebi.ac.uk/chembl/target/inspect/CHEMBL245): Muscarinic acetylcholine receptor M3
-- NPYR1
-- NPYR2
+- [NPYR1](https://www.ebi.ac.uk/chembl/target/inspect/CHEMBL4777): 	Neuropeptide Y receptor type 1
+- [NPYR2](https://www.ebi.ac.uk/chembl/target/inspect/CHEMBL4018): 	Neuropeptide Y receptor type 2
 
 # Preprocessing: Where does these data files come from?
 
@@ -40,11 +40,17 @@ Later it became clearer that we could create the same algorithm in Python using 
 
 We will update this repository to include the preprocessing steps as well.
 
+I am currently working on translating everything to Python and we will possibly use RDKit for most of the cheminformatics tasks.
+
 ## What are the data splits?
 
-We split the data sets at random into 5 different test studies. At each test, 75% of samples were used during cross-validation to build and select the regression models and 25% were used as external validation set.
+We split the data sets at random into 5 different test studies. At each test, 75% of samples were used to build and select the regression models under cross-validation while the remaining 25% were used as external validation set.
 
 We wanted to compare algorithms using the same cross-validation folds and external set samples so the files under the directory _data\_splits_ contain the indices of all tests. This includes the indices for the 10 batches of 10-fold cross-validation performed on the internal set of samples. 
 
 <b id="f1">1</b> Using $IC\_50$ as the sole measure of effectiveness was a decision made earlier in the project. The same pipeline would work perfectly fine with other metrics such as $K_i$ or by combining the log of concentrations measured with $K_i$ + $IC_50$. [↩](#a1)
 
+# Contact
+
+Sophia Tsoka: sophia.tsoka@kcl.ac.uk
+Jonathan Cardoso-Silva: jonathan.silva@kcl.ac.uk
