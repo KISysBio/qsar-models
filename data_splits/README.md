@@ -6,11 +6,11 @@ This directory contains the data files used in the study `Optimal Piecewise Regr
 
 We tested `OPLRAreg` on 5 data sets downloaded from ChEMBL:
 
-- rDHFR
-- hDHFR
+- [rDHFR](https://www.ebi.ac.uk/chembl/target/inspect/CHEMBL2363): Dihydrofolate reductase (_Rattus norvegicus_)
+- [hDHFR](https://www.ebi.ac.uk/chembl/target/inspect/CHEMBL202): Dihydrofolate reductase (_Homo sapiens_)
 - [CHRM3](https://www.ebi.ac.uk/chembl/target/inspect/CHEMBL245): Muscarinic acetylcholine receptor M3
-- NPYR1
-- NPYR2
+- [NPYR1](https://www.ebi.ac.uk/chembl/target/inspect/CHEMBL4777): 	Neuropeptide Y receptor type 1
+- [NPYR2](https://www.ebi.ac.uk/chembl/target/inspect/CHEMBL4018): 	Neuropeptide Y receptor type 2
 
 
 # Where does these data files come from?
